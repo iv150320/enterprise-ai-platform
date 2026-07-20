@@ -176,6 +176,36 @@ def check_rag_pipeline() -> Result:
     )
 
 
+def check_rag_query() -> Result:
+    """Verify the full RAG loop: upload -> query -> answer + sources via gateway."""
+    content = "Enterprise AI Platform is a portfolio of six production-ready services."
+    code, body = _upload_document(KNOWLEDGE_PORT, content)
+    try:
+        data = json.loads(body) if body else {}
+    except json.JSONDecodeError:
+        data = {}
+    if code != 201 or data.get("status") != "ready":
+        return Result("knowledge-assistant RAG query", False, f"ingest failed: HTTP {code}")
+    qcode, qbody = _post_json(
+        KNOWLEDGE_PORT,
+        "/api/v1/query",
+        {"question": "What is the Enterprise AI Platform?", "top_k": 3, "use_hybrid": False, "rerank": True},
+    )
+    try:
+        qdata = json.loads(qbody) if qbody else {}
+    except json.JSONDecodeError:
+        qdata = {}
+    answer = (qdata.get("answer") or "").strip()
+    sources = qdata.get("sources") or []
+    ok = qcode == 200 and len(answer) > 0 and len(sources) > 0
+    return Result(
+        "knowledge-assistant RAG query",
+        ok,
+        f"HTTP {qcode} answer_len={len(answer)} sources={len(sources)}"
+        + ("" if ok else f" | {qbody[:120]}"),
+    )
+
+
 # ── Runner ────────────────────────────────────────────────────────────────
 def main() -> int:
     print("═" * 64)
@@ -194,6 +224,7 @@ def main() -> int:
     results.append(check_agent_orchestration())
     results.append(check_observability())
     results.append(check_rag_pipeline())
+    results.append(check_rag_query())
 
     # Report
     print()
