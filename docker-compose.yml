@@ -77,6 +77,9 @@ services:
     environment:
       - NVIDIA_NIM_API_KEY=${NVIDIA_NIM_API_KEY}
       - REDIS_HOST=redis
+      # OpenTelemetry — export to the observability platform
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
+      - OTEL_SERVICE_NAME=nvidia-nim-gateway
     depends_on:
       - redis
 
@@ -85,6 +88,10 @@ services:
     <<: *defaults
     ports:
       - "8001:8000"
+    environment:
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
+      - OTEL_SERVICE_NAME=financial-ai-copilot
     depends_on:
       - postgres
       - redis
@@ -95,6 +102,10 @@ services:
     <<: *defaults
     ports:
       - "8002:8000"
+    environment:
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
+      - OTEL_SERVICE_NAME=knowledge-assistant
     depends_on:
       - postgres
       - qdrant
@@ -106,6 +117,10 @@ services:
     <<: *defaults
     ports:
       - "8003:8000"
+    environment:
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
+      - OTEL_SERVICE_NAME=agent-platform
     depends_on:
       - postgres
       - redis
@@ -116,6 +131,10 @@ services:
     <<: *defaults
     ports:
       - "8004:8000"
+    environment:
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
+      - OTEL_SERVICE_NAME=prompt-evaluation-platform
     depends_on:
       - postgres
       - redis
@@ -126,6 +145,10 @@ services:
     <<: *defaults
     ports:
       - "8005:8000"
+      - "4318:4318"  # OTLP HTTP receiver
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
+      - OTEL_SERVICE_NAME=observability-platform
     depends_on:
       - clickhouse
       - postgres
