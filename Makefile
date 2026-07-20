@@ -1,4 +1,4 @@
-.PHONY: help setup build up down logs test lint clean
+.PHONY: help setup build up down logs test lint smoke clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -31,6 +31,9 @@ lint: ## Run all linters
 			$(MAKE) -C "$$dir" lint; \
 		fi; \
 	done
+
+smoke: ## Run end-to-end smoke test against running stack
+	python3 scripts/smoke_test.py
 
 clean: ## Clean build artifacts
 	docker compose down -v
