@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'nvidia-nim-gateway'
+    static_configs:
+      - targets: ['nvidia-nim-gateway:8000']
+  - job_name: 'financial-copilot'
+    static_configs:
+      - targets: ['financial-ai-copilot:8000']
+  - job_name: 'knowledge-assistant'
+    static_configs:
+      - targets: ['knowledge-assistant:8000']
+  - job_name: 'agent-platform'
+    static_configs:
+      - targets: ['agent-platform:8000']
+  - job_name: 'prompt-platform'
+    static_configs:
+      - targets: ['prompt-platform:8000']
+  - job_name: 'observability-platform'
+    static_configs:
+      - targets: ['observability-platform:8000']
