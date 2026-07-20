@@ -81,6 +81,7 @@ services:
     environment:
       - NVIDIA_NIM_API_KEY=${NVIDIA_NIM_API_KEY}
       - REDIS_HOST=redis
+      - NIM_GW_MOCK_MODE=1
       # OpenTelemetry — export to the observability platform
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
       - OTEL_SERVICE_NAME=nvidia-nim-gateway
@@ -110,6 +111,12 @@ services:
       - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
       - OTEL_SERVICE_NAME=knowledge-assistant
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_DB=enterprise_ai
+      - QDRANT_HOST=qdrant
+      - REDIS_HOST=redis
     depends_on:
       - postgres
       - qdrant
