@@ -94,7 +94,7 @@ services:
     ports:
       - "8101:8000"
     environment:
-      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000/v1
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
       - OTEL_SERVICE_NAME=financial-ai-copilot
     depends_on:
@@ -108,7 +108,7 @@ services:
     ports:
       - "8102:8000"
     environment:
-      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000/v1
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
       - OTEL_SERVICE_NAME=knowledge-assistant
       - POSTGRES_HOST=postgres
@@ -129,7 +129,7 @@ services:
     ports:
       - "8103:8000"
     environment:
-      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000/v1
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
       - OTEL_SERVICE_NAME=agent-platform
     depends_on:
@@ -143,7 +143,7 @@ services:
     ports:
       - "8104:8000"
     environment:
-      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000
+      - NIM_GATEWAY_URL=http://nvidia-nim-gateway:8000/v1
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
       - OTEL_SERVICE_NAME=prompt-evaluation-platform
     depends_on:
