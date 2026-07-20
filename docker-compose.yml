@@ -28,7 +28,7 @@ services:
     image: redis:7-alpine
     <<: *defaults
     ports:
-      - "6379:6379"
+      - "6380:6379"
 
   qdrant:
     image: qdrant/qdrant:latest
@@ -153,6 +153,8 @@ services:
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://observability-platform:4318
       - OTEL_SERVICE_NAME=observability-platform
+      - POSTGRES_DSN=postgresql+asyncpg://postgres:changeme@postgres:5432/enterprise_ai
+      - CLICKHOUSE_DSN=clickhouse://default:@clickhouse:9000/aop
     depends_on:
       - clickhouse
       - postgres
