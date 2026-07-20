@@ -131,6 +131,51 @@ def check_observability() -> Result:
     return Result("observability-platform health", ok, f"HTTP {code}" + ("" if ok else f" | {body[:120]}"))
 
 
+def _upload_document(port: int, content: str, filename: str = "smoke.txt") -> tuple[int, str]:
+    """Multipart upload of a document to the knowledge-assistant ingestion API."""
+    boundary = "----smokeboundary"
+    crlf = b"\r\n"
+    body = b""
+    # file part
+    body += f"--{boundary}".encode() + crlf
+    body += f'Content-Disposition: form-data; name="file"; filename="{filename}"'.encode() + crlf
+    body += b"Content-Type: text/plain" + crlf + crlf
+    body += content.encode() + crlf
+    body += f"--{boundary}--".encode() + crlf
+    url = f"http://localhost:{port}/api/v1/documents/upload?chunking_strategy=token&synchronous=true"
+    headers = {
+        "Content-Type": f"multipart/form-data; boundary={boundary}",
+        "Content-Length": str(len(body)),
+    }
+    req = urllib.request.Request(url, data=body, method="POST")
+    for k, v in headers.items():
+        req.add_header(k, v)
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
+            return resp.status, resp.read().decode("utf-8", "replace")
+    except urllib.error.HTTPError as exc:  # type: ignore[attr-defined]
+        return exc.code, exc.read().decode("utf-8", "replace") if exc.fp else ""
+    except Exception as exc:  # noqa: BLE001
+        return 0, f"{type(exc).__name__}: {exc}"
+
+
+def check_rag_pipeline() -> Result:
+    """Upload a document and verify the RAG pipeline reaches READY via the gateway."""
+    content = "Enterprise AI Platform is a portfolio of six production-ready services."
+    code, body = _upload_document(KNOWLEDGE_PORT, content)
+    try:
+        data = json.loads(body) if body else {}
+    except json.JSONDecodeError:
+        data = {}
+    status = data.get("status")
+    ok = code == 201 and status == "ready"
+    return Result(
+        "knowledge-assistant RAG pipeline",
+        ok,
+        f"HTTP {code} status={status}" + ("" if ok else f" | {body[:120]}"),
+    )
+
+
 # ── Runner ────────────────────────────────────────────────────────────────
 def main() -> int:
     print("═" * 64)
@@ -148,6 +193,7 @@ def main() -> int:
     results.append(check_financial_stream())
     results.append(check_agent_orchestration())
     results.append(check_observability())
+    results.append(check_rag_pipeline())
 
     # Report
     print()
