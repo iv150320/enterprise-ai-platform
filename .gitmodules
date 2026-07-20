@@ -1,0 +1,18 @@
+[submodule "financial-ai-copilot"]
+	path = financial-ai-copilot
+	url = https://github.com/iv150320/financial-ai-copilot.git
+[submodule "enterprise-knowledge-assistant"]
+	path = enterprise-knowledge-assistant
+	url = https://github.com/iv150320/enterprise-knowledge-assistant.git
+[submodule "enterprise-agent-platform"]
+	path = enterprise-agent-platform
+	url = https://github.com/iv150320/enterprise-agent-platform.git
+[submodule "prompt-evaluation-platform"]
+	path = prompt-evaluation-platform
+	url = https://github.com/iv150320/prompt-evaluation-platform.git
+[submodule "nvidia-nim-gateway"]
+	path = nvidia-nim-gateway
+	url = https://github.com/iv150320/nvidia-nim-gateway.git
+[submodule "ai-observability-platform"]
+	path = ai-observability-platform
+	url = https://github.com/iv150320/ai-observability-platform.git
